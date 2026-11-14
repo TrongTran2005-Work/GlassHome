@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "Glassboard \u2014 Liquid Dashboard",
+  "version": "2.0.0",
+  "description": "Apple-inspired Liquid Glass new tab dashboard.",
+  "permissions": [
+    "storage",
+    "bookmarks"
+  ],
+  "host_permissions": [
+    "https://api.open-meteo.com/*",
+    "https://geocoding-api.open-meteo.com/*"
+  ],
+  "chrome_url_overrides": {
+    "newtab": "newtab.html"
+  },
+  "icons": {
+    "16": "assets/icon.svg",
+    "48": "assets/icon.svg",
+    "128": "assets/icon.svg"
+  }
+}
