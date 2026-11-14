@@ -1,6 +1,13 @@
-# Glassboard v2 — Liquid Glass Dashboard
+# Glassboard v2.1 — Liquid Glass Dashboard
 
 New Tab extension cho Chrome/Edge, bố cục bám sát wireframe người dùng cung cấp.
+
+## Bố cục v2.1
+- Đồng hồ đặt góc trên bên trái theo wireframe cập nhật.
+- Dynamic Island căn giữa màn hình.
+- Hai cụm chức năng/widget áp sát mép trái/phải khoảng 2–5 px.
+- Dock và nút + được căn giữa theo toàn màn hình.
+- Dock hỗ trợ favicon tự lấy từ `/favicon.ico` của website; để trống trường icon khi thêm link để dùng favicon, hoặc nhập emoji/ký tự để dùng icon chữ.
 
 ## Bố cục
 - Thanh trạng thái Liquid Glass ở phía trên giữa, có hiệu ứng gradient sRGB chuyển động.
