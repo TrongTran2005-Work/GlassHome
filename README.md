@@ -1,35 +1,48 @@
-# Glassboard v2.1 — Liquid Glass Dashboard
+# Glassboard 4.0
 
-New Tab extension cho Chrome/Edge.
+Apple-inspired Liquid Glass homepage extension for Chromium browsers (Chrome, Edge, Brave, etc.). Built with Manifest V3 and no build step.
 
-## Bố cục v2.1
-- Đồng hồ đặt góc trên bên trái theo wireframe cập nhật.
-- Dynamic Island căn giữa màn hình.
-- Hai cụm chức năng/widget áp sát mép trái/phải khoảng 2–5 px.
-- Dock và nút + được căn giữa theo toàn màn hình.
-- Dock hỗ trợ favicon tự lấy từ `/favicon.ico` của website; để trống trường icon khi thêm link để dùng favicon, hoặc nhập emoji/ký tự để dùng icon chữ.
+## Features
 
-## Bố cục
-- Thanh trạng thái Liquid Glass ở phía trên giữa, có hiệu ứng gradient sRGB chuyển động.
-- Đồng hồ, ngày và lời chào ở trung tâm.
-- Thanh tìm kiếm Google.
-- Ba nút chức năng bên trái: cài đặt, quản lý widget, bookmark.
-- Ba widget bên phải: thời tiết, ghi chú tự lưu, mini widget đếm tương tác.
-- Dock ở cạnh dưới, icon phóng to khi rê chuột.
+- Live clock, date, greeting and 12/24-hour option.
+- Frosted glass clock panel and adjustable digit spacing.
+- Dynamic Island with animated status waveform.
+- Google search with live suggestion dropdown (internet required).
+- macOS-inspired Dock with add/edit/delete links and favicon, image URL, uploaded image or glyph icons.
+- Weather via Open-Meteo (internet required).
+- Autosaving private notes.
+- Entertainment widget with flying emoji particles and persistent counter.
+- Bookmark manager for saved bookmarks and browser bookmarks.
+- Custom wallpaper via local image or URL, blur and dim controls.
+- Light/dark theme, widget visibility and custom greeting name.
+- Adjustable Liquid Glass strength slider.
+- Free positioning mode: drag the clock area, Dynamic Island, function rail, search, each right-side widget independently, and the Dock. Positions are saved locally.
+- Responsive full-screen layout with no page scrolling.
 
-## Offline
-CSS, JavaScript, icon và font đều chạy local. Không dùng CDN, Google Fonts, ảnh ngoài hoặc thư viện bên thứ ba. Chỉ widget thời tiết gọi Open-Meteo qua Internet. Hình nền mặc định là gradient CSS; hình nền cá nhân được lưu trong chrome.storage.local.
+## Install in Chrome
 
-## Cài đặt
-1. Giải nén file ZIP.
-2. Chrome: mở `chrome://extensions`; Edge: mở `edge://extensions`.
-3. Bật Developer mode.
-4. Chọn Load unpacked và chọn thư mục `glassboard-v2`.
-5. Mở tab mới. Nếu cập nhật code, bấm Reload trên trang Extensions.
+1. Extract the ZIP archive.
+2. Open `chrome://extensions`.
+3. Enable **Developer mode**.
+4. Click **Load unpacked**.
+5. Select the `glassboard-v3` folder (the folder containing `manifest.json`).
 
-## Ghi chú
-- Thiết kế dùng CSS Grid, `100dvh`, `overflow:hidden`, `clamp()` và media queries để co giãn, không cuộn.
-- Trên màn hình nhỏ, các widget chuyển thành hàng ngang; ở màn hình rất hẹp, widget giải trí tự ẩn để ưu tiên đồng hồ, ghi chú, thời tiết và Dock.
-- Hình nền tải lên tối đa 5 MB.
-- Bookmark Manager đọc bookmark thông qua quyền `bookmarks`.
-- Weather sử dụng API miễn phí Open-Meteo, không cần API key.
+## Install in Microsoft Edge
+
+1. Extract the ZIP archive.
+2. Open `edge://extensions`.
+3. Enable **Developer mode**.
+4. Click **Load unpacked**.
+5. Select the `glassboard-v3` folder.
+
+## Free positioning
+
+Open **Tùy chỉnh** → enable **Bật sắp xếp**. Close the settings drawer, then drag the outlined areas. Reopen settings and choose **Hoàn tất** to leave positioning mode. The position is saved automatically.
+
+## Offline and online behavior
+
+The layout, CSS, JavaScript, icons and local settings work offline. Weather, Google search suggestions, remote website favicons and wallpaper URLs require an internet connection. Local wallpapers and uploaded Dock icons are stored locally.
+
+## Data
+
+Preferences, notes, links, custom bookmarks, wallpaper data and layout coordinates are stored in browser local extension storage. Nothing is sent to a Glassboard server.

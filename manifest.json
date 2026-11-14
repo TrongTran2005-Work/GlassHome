@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
-  "name": "Glassboard — Liquid Dashboard",
-  "version": "3.0.0",
+  "name": "Glassboard 4.0 — Liquid Dashboard",
+  "version": "4.0.0",
   "description": "Apple-inspired Liquid Glass new tab dashboard with customizable widgets, dock, bookmarks, notes and weather.",
   "permissions": [
     "storage",
@@ -11,6 +11,7 @@
     "https://api.open-meteo.com/*",
     "https://geocoding-api.open-meteo.com/*",
     "https://www.google.com/*",
+    "https://suggestqueries.google.com/*",
     "https://www.google.com/s2/favicons/*",
     "https://icons.duckduckgo.com/*",
     "https://*/*",
