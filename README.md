@@ -1,5 +1,6 @@
-# GlassHome Extension by TrongDepTryy
-GlassHome Extension by TrongDepTryy. Dựa trên cảm hứng từ Liquid, tiện ích mở rộng trang chủ ra đời dành cho Google Chrome và Microsoft Edge, được thiết kế theo phong cách glass với hiệu ứng dựa trên chất lỏng hiện đại. Tất cả đều được hỗ trợ bởi AI. Dự án được làm bởi một sinh viên không chuyên về IT và muốn gia nhập thế giới AI.
+# GlassHome Extension by TrongDepTryy Extension by TrongDepTryy
+GlassHome Extension by TrongDepTryy Extension by TrongDepTryy. Dựa trên cảm hứng từ Liquid, tiện ích mở rộng trang chủ ra đời dành cho Google Chrome và Microsoft Edge, được thiết kế theo phong cách glass với hiệu ứng dựa trên chất lỏng hiện đại. Tất cả đều được hỗ trợ bởi AI. Dự án được làm bởi một sinh viên không chuyên về IT và muốn gia nhập thế giới AI.
+
 ## Bản sửa nâng cấp lớn 4.5
 - Big Update 4.5
 
@@ -17,7 +18,17 @@ Ra mắt website hỗ trợ app.
 Tối ưu thị giác hệ thống.
 Thay đổi nền bảng hiện tại.
 
+## Project Purpose and Commercial Status
 
+GlassHome Extension by TrongDepTryy is an independent, non-commercial open-source project created and maintained by TrongDepTryy.
+
+The project is developed and distributed free of charge for community use, learning, customization, and further development.
+
+GlassHome Extension by TrongDepTryy is not currently operated as a commercial product or paid service by its original creator.
+
+This statement describes the current purpose and operating status of the original project. It does not modify or restrict the permissions granted under the Apache License, Version 2.0.
+
+Third-party services and resources integrated into GlassHome Extension by TrongDepTryy remain subject to their respective terms of use and licensing conditions.
 
 
 ## Cài đặt
@@ -30,5 +41,5 @@ CSS/JS/icon chạy local. Thời tiết, gợi ý Google và favicon cần Inter
 
 ## Credits
 Created and maintained by TrongDepTryy.
-GlassHome is an independent open-source project. Modified versions should clearly identify their changes and should not imply official status or endorsement by the original creator.
+GlassHome Extension by TrongDepTryy is an independent open-source project. Modified versions should clearly identify their changes and should not imply official status or endorsement by the original creator.
 
