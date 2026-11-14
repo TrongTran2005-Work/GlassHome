@@ -1,11 +1,15 @@
 {
   "manifest_version": 3,
-  "name": "Glassboard 4.0 — Liquid Dashboard",
-  "version": "4.0.0",
-  "description": "Apple-inspired Liquid Glass new tab dashboard with customizable widgets, dock, bookmarks, notes and weather.",
+  "name": "GlassHome",
+  "version": "4.1.0",
+  "description": "GlassHome Liquid Glass dashboard with customizable layout, clock, and reminders.",
   "permissions": [
     "storage",
-    "bookmarks"
+    "bookmarks",
+    "alarms"
+  ],
+  "optional_permissions": [
+    "notifications"
   ],
   "host_permissions": [
     "https://api.open-meteo.com/*",
@@ -13,12 +17,13 @@
     "https://www.google.com/*",
     "https://suggestqueries.google.com/*",
     "https://www.google.com/s2/favicons/*",
-    "https://icons.duckduckgo.com/*",
-    "https://*/*",
-    "http://*/*"
+    "https://icons.duckduckgo.com/*"
   ],
   "chrome_url_overrides": {
     "newtab": "newtab.html"
+  },
+  "background": {
+    "service_worker": "reminders-background.js"
   },
   "icons": {
     "16": "assets/icon16.png",
