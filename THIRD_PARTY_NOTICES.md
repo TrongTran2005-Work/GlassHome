@@ -147,3 +147,15 @@ Third-party services, trademarks, APIs, images, and returned content remain the 
 GlassHome Extension by TrongDepTryy is an independent project. No affiliation, sponsorship, or endorsement by the third-party service providers is implied.
 
 This notice is provided for informational purposes. It does not grant additional rights to third-party materials or replace the original providers' terms and licenses.
+
+## Project Purpose and Commercial Status
+
+GlassHome Extension by TrongDepTryy is an independent, non-commercial open-source project created and maintained by TrongDepTryy.
+
+The project is developed and distributed free of charge for community use, learning, customization, and further development.
+
+GlassHome Extension by TrongDepTryy is not currently operated as a commercial product or paid service by its original creator.
+
+This statement describes the current purpose and operating status of the original project. It does not modify or restrict the permissions granted under the Apache License, Version 2.0.
+
+Third-party services and resources integrated into GlassHome Extension by TrongDepTryy remain subject to their respective terms of use and licensing conditions.
