@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "GlassHome",
+  "name": "GlassHome Extension by TrongDepTryy",
   "version": "4.1.0",
-  "description": "GlassHome Liquid Glass dashboard with customizable layout, clock, and reminders.",
+  "description": "GlassHome Extension by TrongDepTryy - Glass dashboard with customizable layout, clock, and reminders.",
   "permissions": [
     "storage",
     "bookmarks",
