@@ -1,105 +1,35 @@
 <!doctype html>
 <html lang="vi">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#dce6ef"><title>Glassboard</title><link rel="stylesheet" href="styles.css">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#e8f0f7">
+<title>Glassboard 3.0</title><link rel="stylesheet" href="styles.css">
 </head>
-<body>
-<div class="backdrop"></div><div class="grain"></div>
-<div class="app-shell">
-  <header class="status-area">
-    <div class="status-pill" title="Glassboard status"><span class="status-orb"></span><span id="statusText">GLASSBOARD · YOUR SPACE</span><span class="equalizer"><i></i><i></i><i></i><i></i><i></i></span></div>
-  </header>
-
-  <aside class="left-rail" aria-label="Dashboard controls">
-    <button class="rail-button" id="openSettings" title="Cài đặt giao diện" aria-label="Cài đặt"><svg viewBox="0 0 24 24"><path d="M12 8.2a3.8 3.8 0 1 0 0 7.6 3.8 3.8 0 0 0 0-7.6Z"/><path d="m19.4 13.5 1.1.9-1.5 2.6-1.4-.5a7.8 7.8 0 0 1-1.5.9l-.2 1.5h-3l-.3-1.5a7.8 7.8 0 0 1-1.5-.9l-1.4.5-1.5-2.6 1.1-.9a7 7 0 0 1 0-1.8l-1.1-.9 1.5-2.6 1.4.5a7.8 7.8 0 0 1 1.5-.9l.3-1.5h3l.2 1.5a7.8 7.8 0 0 1 1.5.9l1.4-.5 1.5 2.6-1.1.9a7 7 0 0 1 0 1.8Z"/></svg></button>
-    <button class="rail-button" id="openWidgets" title="Tùy chỉnh widget" aria-label="Widget"><svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"/><rect x="3.5" y="13.5" width="7" height="7" rx="2"/><rect x="13.5" y="13.5" width="7" height="7" rx="2"/></svg></button>
-    <button class="rail-button" id="openBookmarks" title="Bookmark manager" aria-label="Bookmarks"><svg viewBox="0 0 24 24"><path d="M6 4.5A1.5 1.5 0 0 1 7.5 3h9A1.5 1.5 0 0 1 18 4.5V21l-6-3.8L6 21V4.5Z"/><path d="M9 7h6M9 10h6"/></svg></button>
+<body class="theme-light">
+<div class="wallpaper" id="wallpaper"></div><div class="wallpaper-tint" id="wallpaperTint"></div><div class="noise"></div>
+<div class="app" id="app">
+  <header class="island-wrap"><div class="dynamic-island" id="dynamicIsland"><i class="island-dot"></i><span id="islandText">GLASSBOARD · YOUR SPACE</span><span class="wave"><i></i><i></i><i></i><i></i><i></i></span></div></header>
+  <section class="clock-block"><div class="clock" id="clock">12:45</div><div class="date" id="date"></div><div class="greeting" id="greeting"></div></section>
+  <nav class="function-rail" aria-label="Chức năng"><button class="rail-btn" id="settingsOpen" title="Tùy chỉnh" aria-label="Tùy chỉnh">⚙</button><button class="rail-btn" id="widgetsOpen" title="Quản lý widget" aria-label="Quản lý widget"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></button><button class="rail-btn" id="bookmarksOpen" title="Bookmark" aria-label="Bookmark">▤</button></nav>
+  <form class="searchbar" id="searchForm"><svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg><input id="searchInput" placeholder="Tìm kiếm với Google..." autocomplete="off"><span>ENTER ↵</span></form>
+  <aside class="widgets" id="widgetColumn">
+    <section class="glass-card weather-card" id="weatherWidget"><div class="card-head"><span>THỜI TIẾT</span><button class="refresh" id="weatherRefresh" title="Cập nhật">↻</button></div><div class="weather-main"><div><div class="temperature" id="temperature">--°</div><div class="weather-place" id="weatherPlace">Đang tải địa điểm...</div><div class="weather-desc" id="weatherDesc">Đang cập nhật thời tiết</div></div><div class="weather-icon" id="weatherIcon">☁️</div></div><div class="weather-extra"><span id="weatherFeels">Cảm giác --°</span><span id="weatherWind">Gió -- km/h</span></div></section>
+    <section class="glass-card notes-card" id="notesWidget"><div class="card-head"><span>GHI CHÚ NHANH</span><span class="saved" id="noteStatus">ĐÃ LƯU</span></div><textarea id="notes" placeholder="Viết điều bạn muốn ghi nhớ..."></textarea><div class="private-note">PRIVATE · ONLY ON THIS DEVICE <span>⌁</span></div></section>
+    <section class="glass-card joy-card" id="joyWidget"><div class="card-head"><span>LITTLE JOY</span><span class="saved">MINI WIDGET</span></div><button class="joy-trigger" id="joyTrigger"><span class="joy-emoji" id="joyEmoji">⭐</span><span class="joy-copy"><b>Good things take time.</b><small>Chạm vào đây để thả niềm vui</small></span><strong id="joyCount">0</strong></button></section>
   </aside>
-
-  <main class="center-stage">
-    <section class="hero">
-      <div class="time-wrap">
-        <div class="time" id="clock">12:45</div>
-        <div class="date" id="date">THỨ SÁU, 13 THÁNG 11</div>
-        <div class="greeting" id="greeting">Chào buổi chiều. Hôm nay bạn muốn làm gì?</div>
-      </div>
-      <form class="search" id="searchForm">
-        <svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg>
-        <input id="searchInput" autocomplete="off" placeholder="Tìm kiếm với Google..." aria-label="Tìm kiếm Google">
-        <kbd>ENTER ↵</kbd>
-      </form>
-    </section>
-  </main>
-
-  <aside class="right-widgets">
-    <section class="glass-card weather-card" id="weatherWidget">
-      <div class="widget-top"><span class="widget-label">THỜI TIẾT</span><button class="mini-action" id="refreshWeather" title="Cập nhật">↻</button></div>
-      <div class="weather-content"><div><div class="temperature" id="temperature">--°</div><div class="weather-place" id="weatherPlace">Đang xác định...</div><div class="weather-desc" id="weatherDesc">Thời tiết hiện tại</div></div><div class="weather-symbol" id="weatherIcon">☁</div></div>
-      <div class="weather-foot"><span id="weatherFeels">Cảm giác --°</span><span id="weatherWind">Gió -- km/h</span></div>
-    </section>
-
-    <section class="glass-card notes-card" id="notesWidget">
-      <div class="widget-top"><span class="widget-label">GHI CHÚ NHANH</span><span class="saved" id="noteSaved">ĐÃ LƯU</span></div>
-      <textarea id="notes" placeholder="Viết điều bạn muốn ghi nhớ..."></textarea>
-      <div class="note-bottom"><span>PRIVATE · ONLY ON THIS DEVICE</span><span>✎</span></div>
-    </section>
-
-    <section class="glass-card play-card" id="playWidget">
-      <div class="widget-top"><span class="widget-label">LITTLE JOY</span><span class="saved">MINI WIDGET</span></div>
-      <button class="tap-game" id="tapGame">
-        <span class="game-icon" id="gameIcon">✦</span>
-        <span class="game-copy"><b>Good things take time.</b><small>Chạm vào ngôi sao để tích lũy niềm vui</small></span>
-        <span class="game-count" id="gameCount">0</span>
-      </button>
-    </section>
-  </aside>
-
-  <footer class="dock-area">
-    <div class="dock" id="dock"></div>
-    <button class="dock-add" id="addLink" title="Thêm liên kết">＋</button>
-  </footer>
-  <div class="corner-note">DESIGNED FOR YOUR EVERYDAY <span>✳</span></div>
+  <footer class="dock-zone"><nav class="dock" id="dock" aria-label="Liên kết nhanh"></nav><button class="dock-add" id="addLink" title="Thêm liên kết">＋</button></footer>
+  <div class="signature">DESIGNED FOR YOUR EVERYDAY <span>✳</span></div>
 </div>
-
-<!-- Settings -->
-<div class="modal-layer" id="settingsModal"><section class="modal">
-  <header class="modal-head"><div><small>PERSONALIZE YOUR SPACE</small><h2>Cá nhân hóa</h2></div><button class="close" data-close="settingsModal">×</button></header>
-  <div class="form-row"><label for="wallpaperFile">Hình nền</label><input id="wallpaperFile" type="file" accept="image/*"></div>
-  <div class="form-row"><label for="cityInput">Thành phố thời tiết</label><div class="inline-input"><input id="cityInput" placeholder="Ví dụ: My Tho, Vietnam"><button id="saveCity" class="action">Lưu</button></div></div>
-  <div class="form-row"><label>Giao diện</label><div class="segmented"><button data-theme="light" class="selected">Pearl glass</button><button data-theme="dark">Midnight glass</button></div></div>
-  <div class="modal-hint">Ảnh nền và cài đặt được lưu trên trình duyệt. Không cần tài khoản.</div>
-  <button class="wide-action" id="clearWallpaper">Khôi phục hình nền mặc định</button>
+<div class="modal-backdrop" id="settingsBackdrop"><section class="drawer" role="dialog" aria-modal="true" aria-label="Tùy chỉnh"><header class="drawer-head"><h2>Tùy chỉnh</h2><button class="close" data-close="settingsBackdrop">×</button></header>
+  <div class="setting-line"><span>Giờ 12 tiếng (AM/PM)</span><label class="switch"><input id="hour12" type="checkbox"><i></i></label></div>
+  <div class="setting-section"><h3>Thời tiết</h3><div class="inline"><input id="cityInput" placeholder="Ví dụ: TP. Hồ Chí Minh"><button class="pill-btn" id="citySave">Tìm</button></div></div>
+  <div class="setting-section"><h3>Widget</h3><div class="setting-line"><span>Thời tiết</span><label class="switch"><input type="checkbox" data-widget="weatherWidget" checked><i></i></label></div><div class="setting-line"><span>Ghi chú</span><label class="switch"><input type="checkbox" data-widget="notesWidget" checked><i></i></label></div><div class="setting-line"><span>Giải trí</span><label class="switch"><input type="checkbox" data-widget="joyWidget" checked><i></i></label></div><div class="setting-line"><span>Dynamic Island luôn sáng màu</span><label class="switch"><input id="islandAlways" type="checkbox" checked><i></i></label></div></div>
+  <div class="setting-section"><h3>Widget giải trí</h3><div class="emoji-picker" id="emojiPicker"><button>❤️</button><button>⭐</button><button>🔥</button><button>🐱</button><button>🍀</button><button>🎯</button><button>🌸</button><button>👍</button></div><div class="inline"><input id="customEmoji" maxlength="6" placeholder="Hoặc nhập emoji của bạn"><button class="pill-btn" id="resetJoy">Đặt lại số đếm</button></div></div>
+  <div class="setting-section"><h3>Giao diện</h3><div class="segmented"><button data-theme="light" class="active">Sáng</button><button data-theme="dark">Tối</button><button data-theme="system">Theo hệ thống</button></div></div>
+  <div class="setting-section"><h3>Hình nền</h3><div class="wallpaper-preview" id="wallpaperPreview"></div><div class="inline wrap"><label class="file-btn">Chọn ảnh từ máy<input id="wallpaperFile" type="file" accept="image/*"></label><button class="pill-btn" id="defaultWallpaper">Nền mặc định</button></div><div class="inline"><input id="wallpaperUrl" placeholder="Hoặc dán link ảnh https://..."><button class="pill-btn" id="applyWallpaper">Áp dụng</button></div><label class="range-line">Làm mờ <input id="blurRange" type="range" min="0" max="24" value="0"><output id="blurValue">0px</output></label><label class="range-line">Độ tối <input id="dimRange" type="range" min="0" max="70" value="8"><output id="dimValue">8%</output></label></div>
+  <div class="setting-section"><h3>Cá nhân</h3><label class="field-label">Tên hiển thị trong lời chào</label><input id="displayName" placeholder="Ví dụ: Minh"></div><p class="drawer-foot">Cài đặt được lưu trên thiết bị này.</p>
 </section></div>
-
-<!-- Widget manager -->
-<div class="modal-layer" id="widgetsModal"><section class="modal">
-  <header class="modal-head"><div><small>LAYOUT CONTROL</small><h2>Quản lý tiện ích</h2></div><button class="close" data-close="widgetsModal">×</button></header>
-  <div class="widget-toggles">
-    <label><span>Thời tiết</span><input type="checkbox" data-widget="weatherWidget" checked></label>
-    <label><span>Ghi chú nhanh</span><input type="checkbox" data-widget="notesWidget" checked></label>
-    <label><span>Widget giải trí</span><input type="checkbox" data-widget="playWidget" checked></label>
-  </div>
-  <div class="modal-hint">Các widget sẽ tự sắp xếp lại để giữ toàn bộ nội dung trong màn hình.</div>
-</section></div>
-
-<!-- Add/edit link -->
-<div class="modal-layer" id="linkModal"><section class="modal small-modal">
-  <header class="modal-head"><div><small>DOCK CUSTOMIZATION</small><h2 id="linkTitle">Thêm liên kết</h2></div><button class="close" data-close="linkModal">×</button></header>
-  <form id="linkForm">
-    <input type="hidden" id="linkIndex">
-    <div class="form-row"><label for="linkName">Tên website</label><input id="linkName" required placeholder="YouTube"></div>
-    <div class="form-row"><label for="linkUrl">Đường dẫn</label><input id="linkUrl" required placeholder="https://youtube.com"></div>
-    <div class="form-row"><label for="linkIcon">Icon (emoji hoặc ký tự)</label><input id="linkIcon" maxlength="5" placeholder="Để trống: tự lấy favicon website"></div>
-    <div class="modal-actions"><button type="button" class="delete-action" id="deleteLink">Xóa</button><button class="action" type="submit">Lưu liên kết</button></div>
-  </form>
-</section></div>
-
-<!-- Bookmarks -->
-<div class="modal-layer" id="bookmarksModal"><section class="modal bookmark-modal">
-  <header class="modal-head"><div><small>YOUR SAVED PLACES</small><h2>Bookmarks</h2></div><button class="close" data-close="bookmarksModal">×</button></header>
-  <div class="bookmark-list" id="bookmarkList">Đang tải bookmark...</div>
-</section></div>
-<div class="toast" id="toast"></div>
-<script src="app.js"></script>
-</body></html>
+<div class="modal-backdrop" id="widgetsBackdrop"><section class="dialog"><header class="dialog-head"><h2>Quản lý widget</h2><button class="close" data-close="widgetsBackdrop">×</button></header><p>Bật hoặc tắt các tiện ích trên màn hình chính.</p><div class="setting-line"><span>Thời tiết</span><label class="switch"><input type="checkbox" data-widget="weatherWidget" checked><i></i></label></div><div class="setting-line"><span>Ghi chú</span><label class="switch"><input type="checkbox" data-widget="notesWidget" checked><i></i></label></div><div class="setting-line"><span>Giải trí</span><label class="switch"><input type="checkbox" data-widget="joyWidget" checked><i></i></label></div></section></div>
+<div class="modal-backdrop" id="linkBackdrop"><section class="dialog link-dialog"><header class="dialog-head"><h2 id="linkTitle">Thêm liên kết</h2><button class="close" data-close="linkBackdrop">×</button></header><form id="linkForm"><input type="hidden" id="linkIndex"><label class="field-label">Tên</label><input id="linkName" required placeholder="Ví dụ: YouTube"><label class="field-label">Địa chỉ website</label><input id="linkUrl" required placeholder="https://example.com"><label class="field-label">Biểu tượng</label><div class="segmented icon-modes"><button type="button" data-iconmode="auto" class="active">Tự động</button><button type="button" data-iconmode="url">Link ảnh</button><button type="button" data-iconmode="upload">Tải ảnh lên</button></div><input id="iconUrl" placeholder="https://example.com/icon.png" hidden><input id="iconFile" type="file" accept="image/*" hidden><div class="icon-preview-row"><span id="iconPreview">?</span><small id="iconHelp">Tự lấy favicon của website (cần Internet).</small></div><label class="field-label">Hoặc dùng ký tự / emoji</label><input id="linkGlyph" maxlength="6" placeholder="Ví dụ: G, ⭐, ▶"><div class="dialog-actions"><button type="button" class="text-danger" id="deleteLink">Xóa liên kết</button><button type="submit" class="primary">Lưu</button></div></form></section></div>
+<div class="modal-backdrop" id="bookmarksBackdrop"><section class="dialog bookmark-dialog"><header class="dialog-head"><h2>Bookmark</h2><button class="close" data-close="bookmarksBackdrop">×</button></header><input id="bookmarkSearch" placeholder="Tìm bookmark..."><div class="bookmark-create"><b>Lưu bookmark mới</b><input id="bookmarkName" placeholder="Tên"><input id="bookmarkUrl" placeholder="https://example.com"><button class="primary" id="saveBookmark">Lưu bookmark</button></div><div class="bookmark-list" id="bookmarkList"></div></section></div>
+<div class="toast" id="toast"></div><div class="joy-layer" id="joyLayer" aria-hidden="true"></div>
+<script src="app.js"></script></body></html>
