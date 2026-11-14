@@ -1,6 +1,6 @@
 # Glassboard v2.1 — Liquid Glass Dashboard
 
-New Tab extension cho Chrome/Edge, bố cục bám sát wireframe người dùng cung cấp.
+New Tab extension cho Chrome/Edge.
 
 ## Bố cục v2.1
 - Đồng hồ đặt góc trên bên trái theo wireframe cập nhật.
@@ -15,7 +15,7 @@ New Tab extension cho Chrome/Edge, bố cục bám sát wireframe người dùng
 - Thanh tìm kiếm Google.
 - Ba nút chức năng bên trái: cài đặt, quản lý widget, bookmark.
 - Ba widget bên phải: thời tiết, ghi chú tự lưu, mini widget đếm tương tác.
-- Dock macOS ở cạnh dưới, icon phóng to khi rê chuột.
+- Dock ở cạnh dưới, icon phóng to khi rê chuột.
 
 ## Offline
 CSS, JavaScript, icon và font đều chạy local. Không dùng CDN, Google Fonts, ảnh ngoài hoặc thư viện bên thứ ba. Chỉ widget thời tiết gọi Open-Meteo qua Internet. Hình nền mặc định là gradient CSS; hình nền cá nhân được lưu trong chrome.storage.local.
