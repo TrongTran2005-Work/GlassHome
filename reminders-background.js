@@ -20,6 +20,12 @@ function nextOccurrence(reminder, now) {
   return next.getTime();
 }
 
+function getCurrentReminder(now) {
+  const minute = Math.floor(now.getMinutes() / 15) * 15;
+  const time = `${String(now.getHours()).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
+  return reminders.find(reminder => reminder.time === time);
+}
+
 function enqueueNotification(reminder, now) {
   const date = getDateKey(now);
   notificationQueue = notificationQueue.then(async () => {
@@ -63,8 +69,7 @@ async function scheduleReminder(reminder, now = new Date()) {
 
 async function scheduleAllReminders() {
   const now = new Date();
-  const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-  const currentReminder = reminders.find(reminder => reminder.time === currentTime);
+  const currentReminder = getCurrentReminder(now);
   if (currentReminder) await enqueueNotification(currentReminder, now);
   await Promise.all(reminders.map(reminder => scheduleReminder(reminder, now)));
 }
@@ -206,7 +211,10 @@ chrome.alarms.onAlarm.addListener(alarm => {
     console.error('Không tìm thấy nội dung cho lịch nhắc:', alarm.name);
     return;
   }
-  void enqueueNotification(reminder, new Date());
+  const now = new Date();
+  if (getCurrentReminder(now)?.time === reminder.time) {
+    void enqueueNotification(reminder, now);
+  }
   void scheduleReminder(reminder).catch(error => {
     console.error('Không thể đặt lịch nhắc tiếp theo:', error);
   });
