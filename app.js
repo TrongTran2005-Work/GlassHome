@@ -412,7 +412,39 @@ $('supportOpen').addEventListener('click',()=>{
 });
 function setJoyEmoji(emoji){selectedEmoji=emoji;$('joyEmoji').textContent=emoji;$('customEmoji').value='';document.querySelectorAll('#emojiPicker button').forEach(b=>b.classList.toggle('active',b.textContent===emoji))}
 document.querySelectorAll('#emojiPicker button').forEach(b=>b.addEventListener('click',async()=>{setJoyEmoji(b.textContent);await store.set({joyEmoji:selectedEmoji})}));$('customEmoji').addEventListener('input',async()=>{if($('customEmoji').value.trim()){selectedEmoji=$('customEmoji').value.trim();$('joyEmoji').textContent=selectedEmoji;document.querySelectorAll('#emojiPicker button').forEach(b=>b.classList.remove('active'));await store.set({joyEmoji:selectedEmoji})}});
-function launchJoy(){joyCount++;$('joyCount').textContent=joyCount;store.set({joyCount});const layer=$('joyLayer'),rect=$('joyTrigger').getBoundingClientRect(),originX=rect.left+rect.width/2,originY=rect.top+rect.height/2;const symbols=[selectedEmoji,'✨','💫','⭐','🫧','🌟'];const count=30;for(let i=0;i<count;i++){const particle=document.createElement('span');particle.className='flying-joy';particle.textContent=symbols[Math.floor(Math.random()*symbols.length)];particle.style.left=originX+'px';particle.style.top=originY+'px';particle.style.setProperty('--x','0px');particle.style.setProperty('--y','0px');particle.style.setProperty('--dx1',(Math.random()*260-130)+'px');particle.style.setProperty('--dy1',(Math.random()*240-120)+'px');particle.style.setProperty('--dx2',(Math.random()*innerWidth*.95-innerWidth*.475)+'px');particle.style.setProperty('--dy2',(Math.random()*innerHeight*.85-innerHeight*.425)+'px');particle.style.setProperty('--dx3',(Math.random()*innerWidth*.95-innerWidth*.475)+'px');particle.style.setProperty('--dy3',(Math.random()*innerHeight*.85-innerHeight*.425)+'px');particle.style.setProperty('--size',(18+Math.random()*28)+'px');particle.style.setProperty('--duration',(1.6+Math.random()*1.5)+'s');layer.append(particle);particle.addEventListener('animationend',()=>particle.remove(),{once:true})}const btn=$('joyTrigger');btn.animate([{transform:'scale(1)'},{transform:'scale(.97)'},{transform:'scale(1)'}],{duration:230});}
+function launchJoy(){
+  joyCount++;
+  $('joyCount').textContent=joyCount;
+  store.set({joyCount});
+
+  const btn=$('joyTrigger');
+  const layer=$('joyLayer');
+  layer.replaceChildren();
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+
+  const rect=btn.getBoundingClientRect(),originX=rect.left+rect.width/2,originY=rect.top+rect.height/2;
+  const symbols=[selectedEmoji,'✨','💫','⭐','🫧','🌟'];
+  const count=14;
+  for(let i=0;i<count;i++){
+    const particle=document.createElement('span');
+    const duration=2.4+Math.random()*1.2;
+    particle.className='flying-joy';
+    particle.textContent=symbols[Math.floor(Math.random()*symbols.length)];
+    particle.style.left=originX+'px';
+    particle.style.top=originY+'px';
+    particle.style.setProperty('--dx1',(Math.random()*180-90)+'px');
+    particle.style.setProperty('--dy1',(Math.random()*160-80)+'px');
+    particle.style.setProperty('--dx2',(Math.random()*innerWidth*.9-innerWidth*.45)+'px');
+    particle.style.setProperty('--dy2',(Math.random()*innerHeight*.8-innerHeight*.4)+'px');
+    particle.style.setProperty('--dx3',(Math.random()*innerWidth*.9-innerWidth*.45)+'px');
+    particle.style.setProperty('--dy3',(Math.random()*innerHeight*.8-innerHeight*.4)+'px');
+    particle.style.setProperty('--size',(26+Math.random()*20)+'px');
+    particle.style.setProperty('--duration',duration+'s');
+    layer.append(particle);
+    particle.addEventListener('animationend',()=>particle.remove(),{once:true});
+  }
+  btn.animate([{transform:'scale(1)'},{transform:'scale(.985)'},{transform:'scale(1)'}],{duration:260});
+}
 $('joyTrigger').addEventListener('click',launchJoy);$('resetJoy').addEventListener('click',async()=>{joyCount=0;$('joyCount').textContent='0';await store.set({joyCount:0});toast('Đã đặt lại số đếm')});
 const hydrationCore=globalThis.GLASS_HOME_HYDRATION;
 let hydrationData=null,hydrationSelectedAmount=250,hydrationAlertTimer=null,hydrationRenderedDate='',hydrationCollapsed=false;

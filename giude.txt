@@ -1,0 +1,440 @@
+# GLASSHOME EXTENSION BY TRONGDEPTRYY — PROJECT HANDOFF
+
+Updated: 2026-11-16
+Repository: TrongTran2005-Work/GlassHome-Extension-by-TrongDepTryy
+Current branch observed: main
+Latest commit observed: 3b17bbc (2026-11-16)
+
+This file is a practical handoff for a developer or AI continuing work on this
+repository. It records facts confirmed from the checked-in files and Git history.
+If something is described as a possible issue or mismatch, verify it before
+changing behavior.
+
+## 1. Project at a glance
+
+GlassHome is a local, Chromium-based browser extension that replaces the New Tab
+page with a customizable glass-style dashboard. The README names Chrome, Edge,
+and Brave. The implementation is plain HTML, CSS, and JavaScript; no framework
+or bundled third-party JavaScript/CSS package is declared.
+
+The extension is configured as Manifest V3. Its main page is newtab.html, its
+interface logic is app.js, its visual styles are in styles.css, and its service
+worker is reminders-background.js.
+
+The UI and documentation are primarily Vietnamese, with some English labels and
+copy. Preserve the existing bilingual style unless a task asks to change it.
+
+## 2. Current repository facts and cautions
+
+- manifest.json declares version 4.1.0, while README.md describes a “Big Update
+  4.5”. Treat these as inconsistent version labels; do not infer a release
+  version from the README alone. Confirm the intended public version before
+  changing it.
+- This project has a custom Non-Commercial Community License in LICENSE. Read
+  that file before advising redistribution or commercial use. THIRD_PARTY_NOTICES
+  describes third-party service and asset terms. Do not assume “public source”
+  means unrestricted commercial use.
+- There is no package.json, build configuration, or test suite visible in the
+  repository inventory reviewed for this note. The project is loaded directly
+  as an unpacked extension.
+- The HTML currently appears to contain repeated project-name wording in the
+  document title and Dynamic Bar text. This may be an accidental copy issue;
+  verify the intended branding before editing it.
+- THIRD_PARTY_NOTICES.md links to NOTICE.md, but the repository file is named
+  NOTICE (no .md extension). Verify/fix that reference if doing a documentation
+  cleanup.
+- The manifest declares https://icons.duckduckgo.com/*; THIRD_PARTY_NOTICES.md
+  says no direct use was found in the reviewed source. Re-check before removing
+  this host permission.
+- Some asset/documentation spellings use “Offical”. Preserve existing file names
+  when referencing them; renaming assets may require updating callers and docs.
+
+## 3. Features visible in the current source
+
+- Live clock, localized date, greeting, optional display name, 12/24-hour
+  display, configurable clock style/color/font/scale/spacing.
+- Day progress bar with percentage, quarter-hour reminder text, adjustable
+  color/font, and optional operating-system notification permission.
+- Weather widget using Open-Meteo geocoding and current-weather endpoints.
+- Quick notes, automatically saved locally after a short debounce.
+- “Joy” mini-widget with a configurable emoji, animated particles, counter, and
+  reset action.
+- Hydration tracker: daily total and goal, history by local date, preset/custom
+  drink amounts, undo, reminder interval and hours, pause/resume, snooze, and
+  optional background notifications.
+- Search submits to Google and requests Google search suggestions for queries of
+  two or more characters.
+- Customizable shortcut dock with built-in defaults, add/edit/delete, automatic
+  favicon, remote icon URL, uploaded icon, or text/emoji fallback.
+- Bookmarks view combines browser bookmarks (when the browser API is available)
+  with user-created local bookmarks and filtering.
+- Widget visibility controls, light/dark/system themes, wallpaper upload or URL,
+  blur/dim/glass controls, free-position layout, and many widget dimensions,
+  offsets, radii, and other visual settings.
+- Dynamic Bar text/appearance, signature/footer customization, and support-site
+  link settings.
+
+## 4. Important files
+
+- manifest.json — Extension name/version, permissions, remote host permissions,
+  New Tab override, service worker, and icon paths.
+- newtab.html — All dashboard markup and settings/dialog controls. It loads
+  reminders-data.js, hydration-core.js, and app.js in that order.
+- styles.css — Dashboard layout, glass effects, themes, responsive rules,
+  dialogs, hydration widget, animations, and layout-editing styles.
+- app.js — UI events, persistence, search/weather, bookmarks, dock, themes,
+  clock/day progress, layout editing, settings, and hydration UI/state.
+- hydration-core.js — Pure hydration defaults/date/time/interval scheduling
+  helpers. Shared by the page and service worker.
+- reminders-data.js — Vietnamese day-progress reminder text at 15-minute
+  increments (00:00 through 23:45).
+- reminders-background.js — Manifest V3 service worker. Schedules reminder and
+  hydration alarms and emits optional browser notifications.
+- README.md — Brief project introduction, version notes, install instructions,
+  and credits.
+- LICENSE — Project's Non-Commercial Community License. Read before reuse.
+- NOTICE — Project copyright/license notice.
+- THIRD_PARTY_NOTICES.md — External services/assets and related caveats.
+- assets/ — Extension icons, default wallpaper, and other image resources.
+- Offical Icons/ — Additional official-icon image files. Preserve the existing
+  spelling of this folder.
+- giude.txt — This handoff document.
+
+## 5. Runtime and data flow
+
+The page uses the browser's chrome.storage.local through a small `store` wrapper
+in app.js. If the Chrome extension API is not present, that wrapper falls back to
+localStorage, which is useful for a basic page preview. Browser-only features
+such as extension notifications and native bookmarks require the extension
+context and the corresponding browser APIs.
+
+Settings, notes, custom links/bookmarks, wallpaper data, layout, and hydration
+history are persisted locally by the browser. Uploaded wallpaper data is read
+as a data URL and stored locally; the UI limits it to 5 MB. Uploaded dock icons
+are limited to 1 MB. Do not promise that settings automatically sync between
+devices; no sync-storage implementation was found.
+
+Important storage keys observed in app.js and reminders-background.js:
+
+- Dashboard: links, notes, wallpaper, theme, city, visibleWidgets, displayName,
+  hour12, islandAlways, islandText, joyCount, joyEmoji, customBookmarks.
+- Visual settings: wallblur, dim, glassStrength, clockGap, clockStyle,
+  clockColor, clockFontFamily, clockFontScale, clockTopOffset,
+  clockLeftOffset, dayTrackerTopOffset, dayTrackerFontSize, dayProgressColor,
+  widgetRightOffset, widgetGap, weatherRadius, notesRadius, joyRadius,
+  notesHeight, dockRadius, functionMenuSize, functionMenuUnframed,
+  hydrationWidgetWidth, hydrationWidgetHeight, hydrationCollapsedWidth,
+  hydrationCollapsedHeight, hydrationCollapsedDropWidth, and
+  hydrationCollapsedDropHeight.
+- Layout: freeLayout and layoutVersion. restoreLayout() uses layout version 41;
+  when it sees another version, it removes the saved freeLayout coordinates and
+  writes version 41. Be careful when changing this migration behavior.
+- Hydration: hydrationData. This object includes settings, historyByDate,
+  nextReminderAt, lastReminderAt, lastHomeReminderAt, and snoozedUntil.
+- Background day reminders: glassboardReminderNotificationState.
+
+The exact set of persisted visual settings may evolve. Search app.js for
+`store.get`, `store.set`, and `store.remove` before renaming a key; changing
+storage names can break existing users' saved preferences.
+
+## 6. Reminders and notification behavior
+
+Day progress is calculated from local clock time in app.js and refreshed every
+second. The on-page reminder text is selected from reminders-data.js by the
+current 15-minute time slot.
+
+reminders-background.js separately uses chrome.alarms for quarter-hour
+notifications. Notifications are optional: manifest.json declares
+`notifications` under optional_permissions. The UI requests it after a user
+action. The background script checks permission before sending notifications.
+
+The hydration defaults in hydration-core.js are:
+
+- Reminders enabled.
+- 60-minute interval (custom interval is clamped to 5–480 minutes).
+- Allowed hours 07:00–22:30.
+- Daily goal 2,000 ml.
+- Background notifications disabled until explicitly enabled.
+
+Hydration totals are stored by local calendar date. The time helper supports
+allowed periods that cross midnight. Browser notification actions include
+“Snooze 10 minutes” and “Drank 200 ml”. A page alert is also used while the
+dashboard is open.
+
+See “Các lỗi đã sửa được xác minh” below for the confirmed reminder fixes and
+their commit references. Do not remove those safeguards without reproducing
+the original issue and adding an appropriate regression test.
+
+## 7. Permissions and external network requests
+
+Required permissions in manifest.json:
+
+- storage — Local extension data.
+- bookmarks — Read the browser's bookmarks for the bookmark panel.
+- alarms — Schedule background reminders.
+
+Optional permission:
+
+- notifications — System notifications, requested by the UI when appropriate.
+
+Declared host permissions include Open-Meteo geocoding/forecast, Google search,
+Google suggestions, Google favicon service, and DuckDuckGo icons. Source code
+uses Open-Meteo for weather, Google for search/suggestions/favicons, and accepts
+user-supplied wallpaper/icon/shortcut URLs. THIRD_PARTY_NOTICES.md currently
+records DuckDuckGo icons as declared but unused.
+
+Search queries are sent to Google when submitted or when suggestions are
+requested. City names/coordinates are sent to Open-Meteo when weather is loaded.
+Automatic favicons and user-supplied remote images require network access.
+Offline UI features and uploaded/local images do not require these services.
+Use THIRD_PARTY_NOTICES.md for the repository's more detailed third-party notes.
+
+## 8. Install and continue development
+
+Install/test manually:
+
+1. Open `chrome://extensions` in Chrome or `edge://extensions` in Edge.
+2. Enable Developer mode.
+3. Choose “Load unpacked” and select the project root (the folder containing
+   manifest.json).
+4. Open a new tab. After source changes, use Reload on the extension page and
+   open a fresh tab. Inspect the extension/service-worker errors if behavior
+   does not update.
+
+Development workflow:
+
+1. Read the relevant HTML, app.js, styles.css, and (for reminders) both
+   hydration-core.js and reminders-background.js before changing behavior.
+2. Preserve Manifest V3 APIs and the existing Vietnamese UI conventions.
+3. Keep user preferences backward-compatible; if a stored schema changes, add a
+   small explicit migration instead of silently discarding data.
+4. Test the exact feature in Chrome/Edge. Check both the visible page and
+   service-worker behavior for alarms/notifications.
+5. Check `git status --short` before and after edits; avoid overwriting user
+   changes. Do not commit unless asked.
+
+No build/test command is configured in the files reviewed. At the time this note
+was prepared, `node` was not available in the command environment, so no Node
+syntax check was run. This task only documents the project; no application
+source behavior was changed.
+
+Suggested manual smoke checks after relevant code changes:
+
+- Load the unpacked extension and confirm the New Tab page renders without
+  console errors.
+- Reload and confirm notes, theme, links, wallpaper, and settings persist.
+- Test online weather/search separately from offline/local features.
+- Test reminder enable/disable, time window, interval, permission granted and
+  denied, service-worker restart, and duplicate-notification behavior.
+- Test hydration record/custom amount/undo and date rollover.
+- Test layout on desktop and a narrow/mobile-sized viewport.
+
+## Các lỗi đã sửa được xác minh
+
+The following items are supported by the checked-in implementation and/or the
+referenced Git diffs. They describe fixes already present in repository history;
+they were not newly implemented during this documentation task.
+
+### Lịch nhắc bị gửi lặp hoặc dồn thông báo
+
+- Commit 1565e63 (2026-11-15) addresses repeated/stacked reminders. It added a
+  helper that identifies the current 15-minute reminder slot and only sends an
+  alarm's message when that alarm matches the current slot. This avoids
+  treating every alarm callback as the currently due reminder.
+- Commit 3b17bbc (2026-11-16) clears existing `glassboard-reminder-*` alarms
+  before rebuilding the schedule. This prevents old alarms from accumulating
+  across a reschedule/restart.
+- The same commit checks both the alarm's scheduled calendar date and the
+  current reminder slot before sending. This guards against a stale alarm from
+  a previous day firing as if it were today's reminder.
+- The current implementation also records sent reminder times by local date
+  in `glassboardReminderNotificationState` and serializes notification work
+  through a queue. Preserve these safeguards when modifying notification
+  scheduling.
+
+### Lỗi đã nêu nhưng chưa thể liệt kê cụ thể
+
+README.md says the 4.5 update fixed multiple outstanding V4 issues, but neither
+README.md nor the reviewed commit messages enumerate those individual defects.
+Do not invent a detailed bug list for them. Inspect older source diffs, issues,
+or reproduction steps before documenting any additional “fixed” bugs.
+
+No application-code fixes were made during this handoff session; this section
+records fixes already present in project history.
+
+## 9. Recent Git history observed
+
+- 3b17bbc (2026-11-16) — Update reminders-background.js; alarm cleanup and
+  scheduled-date check to address duplicate/old reminder notifications.
+- 1565e63 (2026-11-15) — “Update V4.5”; described as fixing stacked reminders.
+- dd501c9 (2026-11-15) — Added THIRD_PARTY_NOTICES.md.
+- b1e5bfd (2026-11-15) — Added NOTICE.
+- ab0c122 (2026-11-15) — Added LICENSE.
+
+The repository history contains earlier UI and V4.5 updates, but commit titles
+alone do not establish every implementation detail. Inspect the relevant commit
+diff before claiming exactly what an older change fixed.
+
+## 10. What was changed for this handoff
+
+At the start of this documentation task, `giude.txt` was an empty, untracked
+file. The existing app files had no uncommitted changes. This handoff populates
+that file with project architecture, current feature inventory, setup, data and
+permission notes, verified recent history, and cautions for future work.
+
+No application code, UI, permissions, assets, or license terms were modified
+while preparing this note. No fixes beyond the documentation update were made
+in this session. Older repository commits listed above are historical project
+changes; they should not be attributed to this handoff.
+
+## 11. Các yêu cầu của người dùng trong workflow này
+
+Ghi lại theo thứ tự các yêu cầu người dùng đã gửi trong cuộc trao đổi này:
+
+1. “hãy ghi chú tất cả mọi thứ bạn biết về dự án, những gì bạn đã làm và đã
+   sửa vào file: `C:\Users\Trong Dep Tryy\Pictures\GlassHome\GlassHome\giude.txt`.
+   hãy ghi tất cả vào đó để copilot, chatgpt hay các ai ở máy khác có thể hiểu
+   và tiếp tục workflow, chỉnh sửa dự án.”
+2. “thêm ghi chú bằng cách thêm các phần lỗi đã sửa”
+3. “thêm ##11 để ghi lại tất cả yêu cầu tui gửi cho bạn”
+
+## 12. Yêu cầu và thay đổi gần đây trong workflow (2026-11-16)
+
+Các mục dưới đây ghi lại yêu cầu và thay đổi được thực hiện sau khi nội dung
+handoff ở trên được tạo. Phần lớn thay đổi UI/logic được làm trong bản làm việc
+`C:\Users\Trong Dep Tryy\Downloads\glassboard-v4.1\glassboard-v4`; thư mục Git
+của dự án là `C:\Users\Trong Dep Tryy\Pictures\GlassHome\GlassHome`.
+
+### Tách vị trí đồng hồ và thanh tiến trình
+
+- Người dùng yêu cầu cụm đồng hồ và thanh tiến trình ngày có hai điều khiển dọc
+  độc lập; kéo/chỉnh đồng hồ không được làm thanh tiến trình di chuyển theo.
+- Thêm điều khiển `dayTrackerTopOffsetRange`, storage key
+  `dayTrackerTopOffset` và CSS custom property
+  `--day-tracker-top-offset`. Đồng hồ tiếp tục dùng
+  `--clock-top-offset` riêng.
+- Loại bỏ logic tự động ghép vị trí đồng hồ với progress và thay bằng hàm
+  `scheduleClockFontLayout()`. Đã sửa các chỗ gọi còn dùng tên scheduler cũ,
+  tránh lỗi `ReferenceError`.
+
+### Ảnh nền mặc định
+
+- Người dùng gửi ảnh hoa tulip hồng trên nền xanh nhạt và yêu cầu dùng làm hình
+  nền mặc định.
+- Lưu ảnh thành `assets/default-wallpaper.png` (1365×768, khoảng 1.19 MB).
+  CSS dùng ảnh này cho hình nền chính ở cả theme sáng/tối và phần preview trong
+  Cài đặt.
+- Nút “Nền mặc định” xóa giá trị wallpaper tùy chỉnh để trở về ảnh mặc định;
+  wallpaper tùy chỉnh đã lưu vẫn được ưu tiên khi khởi tạo.
+- Đã tải lại trang và kiểm tra ảnh tải thành công, được CSS dùng ở cả hai theme
+  và preview. Asset này hiện có trong cả hai thư mục nêu trên.
+
+### Website hỗ trợ
+
+- Người dùng yêu cầu nút menu Hỗ trợ và chữ `[điền sau]` đổi thành “hỗ trợ”,
+  cùng mở URL
+  `https://trongtran2005-work.github.io/TrongDepTryy-HomePage/`.
+- `app.js` có `defaultSupportUrl`; khi không có URL hỗ trợ đã lưu, liên kết
+  inline và nút `#supportOpen` dùng website mặc định. URL không hợp lệ sẽ được
+  ghi log và quay về URL mặc định.
+- Liên kết inline mở tab mới bằng `target="_blank"` và
+  `rel="noopener noreferrer"`; nút menu dùng `window.open()` với
+  `noopener,noreferrer`.
+- Đã kiểm tra trong trình duyệt: nội dung liên kết là “hỗ trợ”, href đúng,
+  click nút Hỗ trợ mở đúng website.
+
+### Mặc định theo ảnh Cài đặt và hiệu ứng Free Hands
+
+- Người dùng gửi ảnh các điều khiển giao diện và yêu cầu dùng các giá trị đó
+  làm mặc định cho cài đặt mới. Các cài đặt đã lưu của hồ sơ cũ phải được giữ.
+- Các mặc định được xác nhận trong `app.js` / `newtab.html`:
+  - Làm mờ hình nền: 0 px.
+  - Độ tối: 6%.
+  - Liquid Glass: 0%.
+  - Khoảng cách chữ số đồng hồ: −1 px.
+  - Font đồng hồ: Georgia; cỡ 75%.
+  - Cụm đồng hồ: cách cạnh trên 19 px và cạnh trái 21 px.
+  - Thanh tiến trình: cách cạnh trên 196 px.
+  - Cột ba widget: cách cạnh phải 31 px.
+- Giá trị saved vẫn được đọc trước; chỉ giá trị bị thiếu mới nhận fallback
+  mặc định. Không xóa hay ghi đè các tùy chỉnh hiện có.
+- Sửa hiệu ứng bay biểu tượng của widget Free Hands: `launchJoy()` đặt các
+  biến `--dx1/--dy1`, `--dx2/--dy2`, `--dx3/--dy3`, trong khi keyframes CSS cũ
+  tham chiếu `--dx/--dy`. Keyframes giờ dùng đúng ba điểm quỹ đạo; animation
+  được kiểm tra trực tiếp bằng browser Web Animations API.
+
+## 13. Trạng thái hai bản mã nguồn và cách tiếp tục
+
+- Bản Git chính dùng cho dự án:
+  `C:\Users\Trong Dep Tryy\Pictures\GlassHome\GlassHome`.
+- Bản làm việc được mở trong các tác vụ UI gần đây:
+  `C:\Users\Trong Dep Tryy\Downloads\glassboard-v4.1\glassboard-v4`.
+  Bản Downloads không có thư mục `.git`; không chạy Git ở đó và không giả định
+  các thay đổi chưa commit hoặc thay đổi tiếp theo đã được đồng bộ.
+- Lần đối chiếu ngày 2026-11-16 cho thấy `app.js` và `styles.css` ở hai thư mục
+  giống hệt nhau; cả hai đều có asset `assets/default-wallpaper.png`.
+  `newtab.html` và `README.md` khác nhau. Khác biệt HTML nhìn thấy gồm title/
+  Dynamic Island branding lặp dài trong bản Git so với “GlassHome”/“GLASSHOME”
+  trong bản Downloads, và một số copy khác. Đây là khác biệt có thật; không tự
+  ý đồng bộ hoặc sửa branding nếu chưa biết bản nào là nguồn chuẩn.
+- Tại lần kiểm tra này, `git status --short` trong bản Git chỉ báo
+  `?? giude.txt`; handoff này chưa được commit. Không có source file nào được
+  chỉnh trong chính tác vụ cập nhật handoff.
+- Trước khi sửa source tiếp theo: xác định người dùng muốn chỉnh thư mục nào,
+  kiểm tra `git status --short` tại root Git, đọc phiên bản file đích hiện tại,
+  rồi chỉ cập nhật bản cần thiết. Không sao chép đè `newtab.html` hoặc README
+  giữa hai thư mục nếu chưa xem diff đầy đủ.
+- Kiểm tra browser trước đây dùng trang `file://` của bản Downloads. Đã kiểm tra
+  ảnh mặc định và animation trong browser; chưa xác nhận mọi hành vi bằng cách
+  reload extension cài trong Chrome/Edge. `node` không có sẵn trong lần kiểm
+  tra shell trước đó; ưu tiên browser smoke test hoặc công cụ có sẵn, và ghi rõ
+  giới hạn kiểm thử.
+
+## 14. Lịch sử yêu cầu người dùng đã biết
+
+Lịch sử hội thoại có một số lượt cũ đã được rút gọn khỏi context. Danh sách dưới
+đây ghi các nhóm yêu cầu có thể xác nhận từ tin nhắn còn lại và các checkpoint;
+không xem đây là bản chép nguyên văn đầy đủ của mọi lượt chat.
+
+1. Tùy chỉnh chữ Dynamic Bar/Island và các thông số widget.
+2. Nền thời tiết sinh động; bo góc riêng cho ba widget; khoảng cách widget đều,
+   không chồng lấn và có thể chỉnh.
+3. Tùy chỉnh kích thước widget, kể cả khi thu gọn; tăng cỡ chữ widget; chỉnh
+   kích thước ô Hydration thu gọn và SVG giọt nước.
+4. Giữ giọt nước chính giữa widget tròn ở mọi kích thước.
+5. Gỡ lỗi service worker / thông báo. Người dùng yêu cầu tìm nguyên nhân trước
+   và hỏi trước khi sửa; về sau yêu cầu thông báo hệ thống, nút kiểm tra quyền,
+   popup yêu cầu quyền khi mở tab nếu chưa cấp, và giải thích rõ không thu thập
+   dữ liệu trái phép.
+6. Các điều khiển khoảng cách cạnh màn hình cho đồng hồ, progress bar và widget;
+   cuối cùng tách vị trí dọc đồng hồ khỏi progress bar.
+7. Menu chức năng hình tròn với bốn mục Cài đặt, Hỗ trợ, Bookmark, Quản lý
+   widget; chỉnh kích thước nút 16–48 px và có tùy chọn bỏ vòng bao.
+8. Chỉnh font/cỡ đồng hồ, vị trí top/left; đảm bảo đồng hồ không đè progress
+   bar. Các lần căn chỉnh đồng hồ theo screenshot cần được giữ thận trọng vì
+   người dùng báo một số lần căn lề trước đó làm lệch nội dung.
+9. Các mục trong Cài đặt phải có khoảng cách hợp lý, không chồng lấn; áp dụng
+   mặc định screenshot cho hồ sơ mới nhưng không làm mất tùy chỉnh hồ sơ cũ.
+10. Icon URL trong dock mặc định lấy favicon tự động.
+11. Thay ảnh nền mặc định bằng ảnh tulip người dùng gửi.
+12. Nối nút Hỗ trợ và chữ “hỗ trợ” tới website giới thiệu sản phẩm nêu trên.
+13. Sửa hiệu ứng thả biểu tượng tim/emoji của widget Free Hands.
+14. Người dùng yêu cầu tài liệu handoff đầy đủ trong file `giude.txt`, có thể
+   dùng cho Copilot, ChatGPT hoặc AI khác để tiếp tục workflow; lần này yêu cầu
+   bắt đầu bổ sung từ mục `##12`.
+
+## 15. Quy tắc bàn giao cho AI tiếp theo
+
+- Đọc handoff này cùng README, manifest và đúng các source file trong thư mục
+  được chọn trước khi sửa. Handoff là ghi chú hỗ trợ, không thay thế source hay
+  lịch sử Git.
+- Không tự suy diễn rằng yêu cầu UI đồng nghĩa với quyền xóa dữ liệu hoặc reset
+  cài đặt người dùng. Mặc định: giá trị mới chỉ áp dụng khi key chưa tồn tại.
+- Người dùng từng yêu cầu hỏi trước khi sửa trong một lần debug thông báo.
+  Nếu một yêu cầu mới lại yêu cầu “hỏi trước”, hãy xác định nguyên nhân/ảnh
+  hưởng trước và xin xác nhận trước khi thay đổi; không tự thực hiện sửa chữa.
+- Giữ UI tiếng Việt và phong cách hiện có; hạn chế thay đổi ngoài phạm vi.
+  Kiểm tra HTML/JS/CSS cùng các storage key liên quan và kiểm thử đúng hành vi
+  thực tế trên browser.
+- Sau khi cập nhật guide, không tuyên bố các thay đổi local đã được commit,
+  phát hành, hay đồng bộ giữa hai thư mục nếu chưa xác minh Git và file đích.
