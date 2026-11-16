@@ -67,7 +67,15 @@ async function scheduleReminder(reminder, now = new Date()) {
   });
 }
 
+async function clearReminderAlarms() {
+  const alarms = await chrome.alarms.getAll();
+  await Promise.all(alarms
+    .filter(alarm => alarm.name.startsWith(alarmPrefix))
+    .map(alarm => chrome.alarms.clear(alarm.name)));
+}
+
 async function scheduleAllReminders() {
+  await clearReminderAlarms();
   const now = new Date();
   const currentReminder = getCurrentReminder(now);
   if (currentReminder) await enqueueNotification(currentReminder, now);
@@ -212,7 +220,9 @@ chrome.alarms.onAlarm.addListener(alarm => {
     return;
   }
   const now = new Date();
-  if (getCurrentReminder(now)?.time === reminder.time) {
+  const alarmDate = new Date(alarm.scheduledTime);
+  if (getDateKey(alarmDate) === getDateKey(now)
+    && getCurrentReminder(now)?.time === reminder.time) {
     void enqueueNotification(reminder, now);
   }
   void scheduleReminder(reminder).catch(error => {
