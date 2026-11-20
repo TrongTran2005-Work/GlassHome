@@ -256,6 +256,10 @@ $('dayProgressColor').addEventListener('input',async()=>{
   applyDayProgressColor(color);
   await store.set({dayProgressColor:color});
 });
+$('dayProgressNotificationsEnabled').addEventListener('change',async()=>{
+  await store.set({dayProgressNotificationsEnabled:$('dayProgressNotificationsEnabled').checked});
+  await updateNotificationPermissionPopup();
+});
 $('dayNotificationTest').addEventListener('click',async()=>{
   const button=$('dayNotificationTest'),status=$('dayNotificationStatus');
   if(typeof chrome==='undefined'||!chrome.permissions?.request||!chrome.permissions?.contains
@@ -316,6 +320,11 @@ async function updateNotificationPermissionPopup(){
   }
   button.disabled=!chrome.permissions.request;
   try{
+    const settings=await store.get(['dayProgressNotificationsEnabled']);
+    if(settings.dayProgressNotificationsEnabled===false){
+      popup.hidden=true;
+      return;
+    }
     const granted=await chrome.permissions.contains({permissions:['notifications']});
     popup.hidden=granted;
     status.textContent=granted?'':'Quyền chưa được cấp. Cửa sổ này sẽ còn hiển thị.';
@@ -712,7 +721,7 @@ async function loadBookmarks(){const box=$('bookmarkList');box.replaceChildren()
 $('bookmarkSearch').addEventListener('input',loadBookmarks);$('saveBookmark').addEventListener('click',async()=>{const name=$('bookmarkName').value.trim(),urlRaw=$('bookmarkUrl').value.trim();if(!name||!urlRaw)return toast('Nhập tên và địa chỉ bookmark');const url=/^https?:\/\//i.test(urlRaw)?urlRaw:'https://'+urlRaw;try{new URL(url)}catch{return toast('Địa chỉ không hợp lệ')}customBookmarks.unshift({name,url});await store.set({customBookmarks});$('bookmarkName').value='';$('bookmarkUrl').value='';loadBookmarks();toast('Đã lưu bookmark')});
 async function init(){
   void updateNotificationPermissionPopup();
-  const d=await store.get(['links','notes','wallpaper','theme','city','visibleWidgets','joyCount','joyEmoji','hour12','islandAlways','islandText','widgetGap','weatherRadius','notesRadius','joyRadius','notesHeight','dockRadius','hydrationWidgetWidth','hydrationWidgetHeight','dayTrackerFontSize','dayProgressColor','signatureText','signatureUrl','supportUrl','wallblur','dim','displayName','customBookmarks','clockStyle','clockColor','functionMenuSize','functionMenuUnframed','clockFontFamily','clockFontScale','clockTopOffset','clockLeftOffset','widgetRightOffset','dayTrackerTopOffset']);
+  const d=await store.get(['links','notes','wallpaper','theme','city','visibleWidgets','joyCount','joyEmoji','hour12','islandAlways','islandText','widgetGap','weatherRadius','notesRadius','joyRadius','notesHeight','dockRadius','hydrationWidgetWidth','hydrationWidgetHeight','dayTrackerFontSize','dayProgressColor','dayProgressNotificationsEnabled','signatureText','signatureUrl','supportUrl','wallblur','dim','displayName','customBookmarks','clockStyle','clockColor','functionMenuSize','functionMenuUnframed','clockFontFamily','clockFontScale','clockTopOffset','clockLeftOffset','widgetRightOffset','dayTrackerTopOffset']);
   if(Array.isArray(d.links)){
     let migrated=false;
     links=d.links.map(item=>{
@@ -746,6 +755,7 @@ async function init(){
   applyHydrationDimensions(d.hydrationWidgetWidth??327,d.hydrationWidgetHeight??259);
   applyDayTrackerFontSize(d.dayTrackerFontSize==null?12:d.dayTrackerFontSize);
   applyDayProgressColor(d.dayProgressColor);
+  $('dayProgressNotificationsEnabled').checked=d.dayProgressNotificationsEnabled!==false;
   const signatureText=typeof d.signatureText==='string'?d.signatureText:defaultSignatureText;
   const storedSignatureUrl=typeof d.signatureUrl==='string'?d.signatureUrl:'';
   const signatureUrl=normalizeSignatureUrl(storedSignatureUrl);

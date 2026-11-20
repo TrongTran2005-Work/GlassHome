@@ -3,6 +3,7 @@ importScripts('reminders-data.js', 'hydration-core.js');
 const reminders = globalThis.GLASSHOME_REMINDERS;
 const alarmPrefix = 'glassboard-reminder-';
 const notificationStateKey = 'glassboardReminderNotificationState';
+const progressNotificationsEnabledKey = 'dayProgressNotificationsEnabled';
 const reminderAlarmGracePeriod = 2 * 60 * 1000;
 const hydrationAlarmName = 'glassboard-hydration-reminder';
 const hydrationNotificationId = 'glassboard-hydration';
@@ -30,8 +31,9 @@ function getCurrentReminder(now) {
 function enqueueNotification(reminder, now) {
   const date = getDateKey(now);
   notificationQueue = notificationQueue.then(async () => {
+    const data = await chrome.storage.local.get([notificationStateKey, progressNotificationsEnabledKey]);
+    if (data[progressNotificationsEnabledKey] === false) return;
     if (!await chrome.permissions.contains({permissions: ['notifications']})) return;
-    const data = await chrome.storage.local.get(notificationStateKey);
     const previousState = data[notificationStateKey];
     const times = previousState?.date === date && Array.isArray(previousState.times)
       ? previousState.times
@@ -77,8 +79,29 @@ async function clearReminderAlarms() {
 
 async function scheduleAllReminders() {
   await clearReminderAlarms();
+  const settings = await chrome.storage.local.get(progressNotificationsEnabledKey);
+  if (settings[progressNotificationsEnabledKey] === false) return;
   const now = new Date();
   await Promise.all(reminders.map(reminder => scheduleReminder(reminder, now)));
+}
+
+async function handleReminderAlarm(alarm, reminder) {
+  const settings = await chrome.storage.local.get(progressNotificationsEnabledKey);
+  if (settings[progressNotificationsEnabledKey] === false) {
+    await chrome.alarms.clear(alarm.name);
+    return;
+  }
+
+  const now = new Date();
+  const elapsedSinceScheduled = now.getTime() - alarm.scheduledTime;
+  if (Number.isFinite(alarm.scheduledTime)
+    && elapsedSinceScheduled >= 0
+    && elapsedSinceScheduled < reminderAlarmGracePeriod
+    && getDateKey(new Date(alarm.scheduledTime)) === getDateKey(now)
+    && getCurrentReminder(now)?.time === reminder.time) {
+    void enqueueNotification(reminder, now);
+  }
+  await scheduleReminder(reminder);
 }
 
 async function scheduleHydrationReminder() {
@@ -218,21 +241,17 @@ chrome.alarms.onAlarm.addListener(alarm => {
     console.error('Không tìm thấy nội dung cho lịch nhắc:', alarm.name);
     return;
   }
-  const now = new Date();
-  const elapsedSinceScheduled = now.getTime() - alarm.scheduledTime;
-  if (Number.isFinite(alarm.scheduledTime)
-    && elapsedSinceScheduled >= 0
-    && elapsedSinceScheduled < reminderAlarmGracePeriod
-    && getDateKey(new Date(alarm.scheduledTime)) === getDateKey(now)
-    && getCurrentReminder(now)?.time === reminder.time) {
-    void enqueueNotification(reminder, now);
-  }
-  void scheduleReminder(reminder).catch(error => {
-    console.error('Không thể đặt lịch nhắc tiếp theo:', error);
+  void handleReminderAlarm(alarm, reminder).catch(error => {
+    console.error('Không thể xử lý thông báo tiến trình thời gian:', error);
   });
 });
 
 chrome.storage.onChanged.addListener((changes, area) => {
+  if (area === 'local' && changes[progressNotificationsEnabledKey]) {
+    void scheduleAllReminders().catch(error => {
+      console.error('Không thể cập nhật lịch thông báo tiến trình thời gian:', error);
+    });
+  }
   if (area === 'local' && changes[hydrationDataKey]) {
     void scheduleHydrationReminder().catch(error => {
       console.error('Không thể cập nhật lịch nhắc uống nước:', error);
