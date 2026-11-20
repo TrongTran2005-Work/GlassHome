@@ -3,6 +3,7 @@ importScripts('reminders-data.js', 'hydration-core.js');
 const reminders = globalThis.GLASSHOME_REMINDERS;
 const alarmPrefix = 'glassboard-reminder-';
 const notificationStateKey = 'glassboardReminderNotificationState';
+const reminderAlarmGracePeriod = 2 * 60 * 1000;
 const hydrationAlarmName = 'glassboard-hydration-reminder';
 const hydrationNotificationId = 'glassboard-hydration';
 const hydrationDataKey = 'hydrationData';
@@ -77,8 +78,6 @@ async function clearReminderAlarms() {
 async function scheduleAllReminders() {
   await clearReminderAlarms();
   const now = new Date();
-  const currentReminder = getCurrentReminder(now);
-  if (currentReminder) await enqueueNotification(currentReminder, now);
   await Promise.all(reminders.map(reminder => scheduleReminder(reminder, now)));
 }
 
@@ -220,8 +219,11 @@ chrome.alarms.onAlarm.addListener(alarm => {
     return;
   }
   const now = new Date();
-  const alarmDate = new Date(alarm.scheduledTime);
-  if (getDateKey(alarmDate) === getDateKey(now)
+  const elapsedSinceScheduled = now.getTime() - alarm.scheduledTime;
+  if (Number.isFinite(alarm.scheduledTime)
+    && elapsedSinceScheduled >= 0
+    && elapsedSinceScheduled < reminderAlarmGracePeriod
+    && getDateKey(new Date(alarm.scheduledTime)) === getDateKey(now)
     && getCurrentReminder(now)?.time === reminder.time) {
     void enqueueNotification(reminder, now);
   }
